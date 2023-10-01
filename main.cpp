@@ -57,7 +57,7 @@ int main(){
     Punto2D RIGHT(6.0,0.0);
     Punto2D LEFT(-6.0,0.0);
     Punto2D STOP(0.0,0.0);
-    Punto2D VELPROYECTIL(0.0,-3.0);
+    Punto2D VELPROYECTIL(0.0,-6.0);
     
     //Inicialización de la pantalla
     InitWindow(screenWidth, screenHeight, "Juego Asteroides");
@@ -68,10 +68,11 @@ int main(){
     while(!WindowShouldClose() && !pause){
         //Movimiento de la nave
         if(IsKeyPressed(KEY_RIGHT))
-            nave.setVelocidad(RIGHT);
+            nave.setVelocidad(RIGHT); 
         else if(IsKeyPressed(KEY_LEFT))
             nave.setVelocidad(LEFT);
-        
+
+              
         //Colisión de la nave con las paredes
         if(nave.getRoca().getCentro().getX()-nave.getRoca().getRadio() <= 0 && !IsKeyPressed(KEY_RIGHT)){
             nave.setVelocidad(STOP);
@@ -117,8 +118,10 @@ int main(){
                     if(asteroides[i].getRoca().getLados() > 3)
                         asteroides[i].eliminaVertice();
                     else
-                        if(util_a > 1)
+                        if(util_a > 1){
+                            
                             eliminaPos(asteroides, i, util_a);
+                        }
                         else
                             util_a --;
                     eliminaPos(proyectil, j, util_p);
@@ -184,19 +187,31 @@ int main(){
         
         //Dibujar Asteroides
         for(int i = 0; i < util_a; i++){
+            Color color;
+            if(asteroides[i].getRoca().getLados() >= 6)
+                color = PURPLE;
+            else
+                if(asteroides[i].getRoca().getLados() == 5)
+                    color = GREEN;
+                else
+                    if(asteroides[i].getRoca().getLados() == 4)
+                        color = BLUE;
+                    else
+                        color = BROWN;
             for(int j = 0; j < asteroides[i].getRoca().getLados()-1; j++)
-                DrawLine(asteroides[i].getRoca().getVertice(j).getX(), asteroides[i].getRoca().getVertice(j).getY(), asteroides[i].getRoca().getVertice(j+1).getX(), asteroides[i].getRoca().getVertice(j+1).getY(), BLACK);
-            DrawLine(asteroides[i].getRoca().getVertice(asteroides[i].getRoca().getLados()-1).getX(), asteroides[i].getRoca().getVertice(asteroides[i].getRoca().getLados()-1).getY(), asteroides[i].getRoca().getVertice(0).getX(),asteroides[i].getRoca().getVertice(0).getY(),BLACK);
+                DrawLine(asteroides[i].getRoca().getVertice(j).getX(), asteroides[i].getRoca().getVertice(j).getY(), asteroides[i].getRoca().getVertice(j+1).getX(), asteroides[i].getRoca().getVertice(j+1).getY(), color);
+            DrawLine(asteroides[i].getRoca().getVertice(asteroides[i].getRoca().getLados()-1).getX(), asteroides[i].getRoca().getVertice(asteroides[i].getRoca().getLados()-1).getY(), asteroides[i].getRoca().getVertice(0).getX(),asteroides[i].getRoca().getVertice(0).getY(),color);
         }
         
         //Dibujar Vidas
         for(int i = 0; i < util_v; i++){
             for(int j = 0; j < vidas[i].getRoca().getLados()-1; j++)
-                DrawLine(vidas[i].getRoca().getVertice(j).getX(), vidas[i].getRoca().getVertice(j).getY(), vidas[i].getRoca().getVertice(j+1).getX(), vidas[i].getRoca().getVertice(j+1).getY(), BLACK);
-            DrawLine(vidas[i].getRoca().getVertice(vidas[i].getRoca().getLados()-1).getX(),vidas[i].getRoca().getVertice(vidas[i].getRoca().getLados()-1).getY(), vidas[i].getRoca().getCentro().getX(), vidas[i].getRoca().getCentro().getY(),BLACK);
-            DrawLine(vidas[i].getRoca().getCentro().getX(), vidas[i].getRoca().getCentro().getY(), vidas[i].getRoca().getVertice(0).getX(), vidas[i].getRoca().getVertice(0).getY(), BLACK);
+                DrawLine(vidas[i].getRoca().getVertice(j).getX(), vidas[i].getRoca().getVertice(j).getY(), vidas[i].getRoca().getVertice(j+1).getX(), vidas[i].getRoca().getVertice(j+1).getY(), RED);
+            DrawLine(vidas[i].getRoca().getVertice(vidas[i].getRoca().getLados()-1).getX(),vidas[i].getRoca().getVertice(vidas[i].getRoca().getLados()-1).getY(), vidas[i].getRoca().getCentro().getX(), vidas[i].getRoca().getCentro().getY(),RED);
+            DrawLine(vidas[i].getRoca().getCentro().getX(), vidas[i].getRoca().getCentro().getY(), vidas[i].getRoca().getVertice(0).getX(), vidas[i].getRoca().getVertice(0).getY(), RED);
         }
-        if(util_v == 0|| util_a == 0){
+        
+        if(util_v == 0 || util_a == 1){
             nave.setVelocidad(STOP);
             for(int i = 0; i < util_p; i++)
                 proyectil[i].setVelocidad(STOP);
